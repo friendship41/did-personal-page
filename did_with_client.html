@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="kr">
+
+<head>
+    <meta charset="utf-8">
+    <title>입주민앱-로그인</title>
+    <link rel="stylesheet" type="text/css" href="./css/main.css">
+    <script src="./js/jquery-3.6.0.js"></script>
+    <script src="./js/jsencrypt.min.js"></script>
+</head>
+
+<body>
+<div class="login-root">
+    <div class="box-root flex-flex flex-direction--column" style="min-height: 100vh;flex-grow: 1;">
+        <div class="loginbackground box-background--white padding-top--64">
+            <div class="loginbackground-gridContainer">
+                <div class="box-root flex-flex" style="grid-area: top / start / 8 / end;">
+                    <div class="box-root"
+                         style="background-image: linear-gradient(white 0%, rgb(247, 250, 252) 33%); flex-grow: 1;">
+                    </div>
+                </div>
+                <div class="box-root flex-flex" style="grid-area: 4 / 2 / auto / 5;">
+                    <div class="box-root box-divider--light-all-2 animationLeftRight tans3s"
+                         style="flex-grow: 1;"></div>
+                </div>
+                <div class="box-root flex-flex" style="grid-area: 6 / start / auto / 2;">
+                    <div class="box-root box-background--blue800" style="flex-grow: 1;"></div>
+                </div>
+                <div class="box-root flex-flex" style="grid-area: 7 / start / auto / 4;">
+                    <div class="box-root box-background--blue animationLeftRight" style="flex-grow: 1;"></div>
+                </div>
+                <div class="box-root flex-flex" style="grid-area: 8 / 4 / auto / 6;">
+                    <div class="box-root box-background--gray100 animationLeftRight tans3s" style="flex-grow: 1;"></div>
+                </div>
+                <div class="box-root flex-flex" style="grid-area: 2 / 15 / auto / end;">
+                    <div class="box-root box-background--cyan200 animationRightLeft tans4s" style="flex-grow: 1;"></div>
+                </div>
+                <div class="box-root flex-flex" style="grid-area: 3 / 14 / auto / end;">
+                    <div class="box-root box-background--blue animationRightLeft" style="flex-grow: 1;"></div>
+                </div>
+                <div class="box-root flex-flex" style="grid-area: 4 / 17 / auto / 20;">
+                    <div class="box-root box-background--gray100 animationRightLeft tans4s" style="flex-grow: 1;"></div>
+                </div>
+                <div class="box-root flex-flex" style="grid-area: 5 / 14 / auto / 17;">
+                    <div class="box-root box-divider--light-all-2 animationRightLeft tans3s"
+                         style="flex-grow: 1;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="box-root padding-top--24 flex-flex flex-direction--column" style="flex-grow: 1; z-index: 9;">
+            <div class="box-root padding-top--48 padding-bottom--24 flex-flex flex-justifyContent--center">
+                <h1><a href="http://blog.stackfindover.com/" rel="dofollow">DID PROTOTYPE</a></h1>
+            </div>
+            <div class="formbg-outer">
+                <div class="formbg">
+                    <div class="formbg-inner padding-horizontal--48">
+                        <span class="padding-bottom--15">DID 본인인증 (세대/로비)</span>
+                        <div>
+                            <label for="clientType">DID 인증 대상</label>
+                            <div id="clientType">
+                                <label for="clientTypeWallpad"><input id="clientTypeWallpad" type="radio" name="clientType" value="wallpad" checked/>월패드</label>
+                                <label for="clientTypeLobby"><input id="clientTypeLobby" type="radio" name="clientType" value="lobby"/>로비</label>
+                            </div>
+                        </div>
+                        <div class="field padding-bottom--24">
+                            <button id="didCheck" onclick="getDIDCheck()">DID 인증 진행</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+
+<script>
+    const publicKey = '-----BEGIN PUBLIC KEY-----\n' +
+        'MIIBmTANBgkqhkiG9w0BAQEFAAOCAYYAMIIBgQKCAXgAuHZeUOtUrnuz91LL8Pgt\n' +
+        'dCsHH3xle2aON9j4dwCt8vaYwC/OtdXU+V7JSbw/7yQT98NqbN5q1sSKFsjsM+Wi\n' +
+        '4HiOfciivVm7QpFRZ5VyUOxd8/2RJbFFiA9Yw85wqT9EVIIGS0toJpSCKsFcB2l8\n' +
+        'gidlegYzDgXAtK3/LS4D+QWHtkQ1FZvEuaUman09cc4BnTrb/cObzuLpTQ9C2x4Q\n' +
+        'ETJJUY2K9U3SHKlrvq2RI4vAzq+5bBuLn9ClqaWX5A20R6hlfxlokJhU/aJdldnk\n' +
+        'fMVLIM2ZvgLibf2k8/9jxAYNyJuA1K/NJFzs1+cDIBG//R0nk/W50tsiDgEBOYcj\n' +
+        'NRVKXk2Ga6taBostC367ffC5IkLO65NPzCjJ8J0Y1+ggQ+06Dw/AbfHqlmu4Biiu\n' +
+        'F4xbjMM606grQ9tGOAqr5kNuL/zWsNy7X1KdO5rkrVaMz+lzWSgEW6i4YOqrVKqN\n' +
+        'wMGJpQtV+H3APaUbE+z5KIaTKMDZDkEnAgMBAAE=\n' +
+        '-----END PUBLIC KEY-----\n';
+    const privateKey = '-----BEGIN PRIVATE KEY-----\n' +
+        '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\n' +
+        'X4+hGab2V6SJAiI2dEcVZpG+k2VUmxJA\n' +
+        '-----END PRIVATE KEY-----';
+
+
+    function getTargetAddress() {
+        if ($('input[name="clientType"]:checked').attr('id') === 'clientTypeWallpad') {
+            return 'http://localhost:21001'
+        }
+        return 'http://localhost:21002'
+    }
+
+    function getDIDCheck() {
+
+        $.ajax({
+            url: getTargetAddress() + '/did/check?did=' + JSON.parse(sessionStorage.getItem("did"))["id"],
+            dataType : 'json',
+            method : 'get',
+            success : function (res) {
+                alert("임의의 값을 받아오는데 성공했습니다.\n 임의의 값: \n" + res["encodedText"]);
+                postDIDCheck(res);
+            },
+            error : function (xhr, status, error) {
+                alert(error);
+            }
+        })
+    }
+
+    function postDIDCheck(res) {
+        const jsEncrypt = new JSEncrypt();
+        jsEncrypt.setPrivateKey(privateKey);
+
+        $.ajax({
+            url: getTargetAddress() + '/did/check',
+            data : JSON.stringify({
+                did: JSON.parse(sessionStorage.getItem("did"))["id"],
+                decodedText: jsEncrypt.decrypt(res["encodedText"])
+            }),
+            contentType: 'application/json;charset=utf-8',
+            dataType : 'json',
+            method : 'post',
+            success : function (res) {
+                alert("DID 본인인증에 성공했습니다.\n서버로 대상이 필요한정보(동/호)만 암호를 제거하여 보냅니다.");
+                postDIDInfo(res);
+            },
+            error : function (xhr, status, error) {
+                alert(error);
+            }
+        })
+    }
+
+    function postDIDInfo(res) {
+        const jsEncrypt = new JSEncrypt();
+        jsEncrypt.setPrivateKey(privateKey);
+
+        const data = JSON.parse(sessionStorage.getItem("did"))["data"];
+        const dong = jsEncrypt.decrypt(data["dong"]);
+        const ho = jsEncrypt.decrypt(data["ho"]);
+        console.log(dong);
+        console.log(ho);
+
+        jsEncrypt.setPrivateKey(res["publicKey"]);
+        jsEncrypt.setPublicKey(res["publicKey"]);
+
+        $.ajax({
+            url: getTargetAddress() + '/did/info',
+            data : JSON.stringify({
+                did: JSON.parse(sessionStorage.getItem("did"))["id"],
+                data: {
+                    "dong": dong,
+                    "ho": ho
+                }
+            }),
+            contentType: 'application/json;charset=utf-8',
+            dataType : 'json',
+            method : 'post',
+            success : function (res) {
+                if (res["result"] === "success") {
+                    alert("DID를 통한 출입권한요청에 성공했습니다.");
+                } else {
+                    alert("DID를 통한 출입권한요청에 실패했습니다. (허가되지 않음)");
+                }
+            },
+            error : function (xhr, status, error) {
+                alert("DID를 통한 출입권한요청에 실패했습니다.");
+            }
+        })
+
+    }
+</script>
+
+</html>
